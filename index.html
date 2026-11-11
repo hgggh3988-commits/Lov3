@@ -161,31 +161,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .love-meter-box {
-            margin-top: 25px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 14px;
-        }
-
-        .heart-btn {
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-            border: none;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
-            transition: transform 0.2s;
-        }
-
-        .heart-btn:active {
-            transform: scale(0.95);
-        }
-
         /* قلوب عائمة في الخلفية */
         .floating-heart {
             position: absolute;
@@ -259,18 +234,12 @@
                 <div class="memory-item">☕ ضحكتك اللي بتنور أي وقت صعب بعدي بيه.</div>
                 <div class="memory-item">🌙 وكل الأوقات الحلوة اللي لسه جاية قدامنا سوا.</div>
             </div>
-
-            <div class="love-meter-box">
-                <h3 style="font-size: 16px; color: #ffb6c1;">مؤشر حبنا اليوم 📈</h3>
-                <p style="font-size: 14px; margin-top: 5px; color: #eee;">بحبك أكتر من امبارح.. وأقل من بكره بكتير! ❤️</p>
-                <button class="heart-btn" onclick="sendLove()">اضغطي هنا لزيادة الحب 🥰</button>
-            </div>
         </div>
     </div>
 
     <script>
         // تاريخ ووقت الفتح المستهدف (11 نوفمبر 2026 الساعة 11:11 مساءً)
-        const targetDate = new Date("November 11, 2026 17:11:00").getTime();
+        const targetDate = new Date("November 11, 2026 23:11:00").getTime();
 
         const countdownInterval = setInterval(function() {
             const now = new Date().getTime();
@@ -284,7 +253,7 @@
                 mainContent.classList.add('show');
                 playWelcomeSound();
             } else {
-                // حساب الأيام وال ساعات والدقائق والثواني
+                // حساب الأيام والساعات والدقائق والثواني
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -314,12 +283,7 @@
 
         setInterval(createFloatingHearts, 500);
 
-        // تفاعل زرار الحب بعد الفتح
-        function sendLove() {
-            alert('وصلت بوسة القلب يا جميل! ❤️ ربنا ما يحرمني منك أبداً 🥰');
-        }
-
-        // تشطيب نغمة خفيفة عند فتح الصفحة (Web Audio API)
+        // تشغيل نغمة خفيفة عند فتح الصفحة (Web Audio API)
         function playWelcomeSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
