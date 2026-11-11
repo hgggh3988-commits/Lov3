@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مفاجأة خاصة جداً 💖</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;800&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blush: {
+                            50: '#fff5f7',
+                            100: '#ffeef2',
+                            200: '#ffdbe4',
+                            300: '#ffb8cb',
+                            400: '#ff85a3',
+                            500: '#f8517c',
+                            600: '#e12b5b',
+                            700: '#be1b47',
+                        },
+                        rosegold: {
+                            light: '#f7d6ce',
+                            DEFAULT: '#b76e79',
+                            dark: '#8e4a54',
+                            accent: '#e8b4b8'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        amiri: ['Amiri', 'serif'],
+                        reem: ['Reem Kufi', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 50%, #fbd1d7 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles / hearts */
+        .heart-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 8s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.7;
+            }
+            80% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Pulse glowing effect */
+        .glow-effect {
+            box-shadow: 0 0 30px rgba(248, 81, 124, 0.35);
+        }
+
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(232, 180, 184, 0.5);
+        }
+
+        /* Envelope transition styles */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+
+        .envelope {
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card-flip {
+            perspective: 1000px;
+        }
+        .card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-flip:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Shimmer effect for titles */
+        .shimmer-text {
+            background: linear-gradient(90deg, #be1b47, #ff85a3, #be1b47);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffeef2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff85a3;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="relative text-slate-800 flex flex-col justify-between min-h-screen selection:bg-blush-300 selection:text-blush-700">
+
+    <!-- Floating Background Hearts Container -->
+    <div id="heartsContainer" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+    <!-- Header Section -->
+    <header class="relative z-10 pt-8 pb-4 text-center px-4">
+        <div class="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-md shadow-sm border border-blush-200 mb-3">
+            <span class="w-2 h-2 rounded-full bg-blush-500 animate-ping"></span>
+            <span class="text-xs font-semibold text-blush-700 tracking-wider">رسالة حب خاصة جداً 💖</span>
+        </div>
+        <h1 class="text-3xl md:text-5xl font-extrabold font-reem shimmer-text tracking-wide drop-shadow-sm">
+            إلى أميرتي وخطيبتي الغالية
+        </h1>
+        <p class="text-sm md:text-base text-rosegold-dark mt-2 font-medium">مفاجأة صُممت بحب خصيصاً لكِ ✨</p>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="relative z-10 max-w-3xl w-full mx-auto px-4 py-6 flex-grow flex flex-col justify-center items-center">
+
+        <!-- ================= STATE 1: LOCKED CARD & COUNTDOWN ================= -->
+        <div id="lockedState" class="w-full flex flex-col items-center">
+            
+            <!-- Target Time Announcement Card -->
+            <div class="w-full bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-xl border border-white/60 glow-effect text-center mb-8 transform transition hover:scale-[1.01]">
+                <div class="w-16 h-16 mx-auto mb-4 bg-blush-100 rounded-full flex items-center justify-center text-blush-600 text-2xl shadow-inner border border-blush-200">
+                    <i class="fa-solid fa-lock text-blush-500 animate-bounce"></i>
+                </div>
+
+                <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">المفاجأة مقفولة بحب! 🔒</h2>
+                <p class="text-sm md:text-base text-slate-600 max-w-md mx-auto leading-relaxed mb-6 font-medium">
+                    المفاجأة دي مقفولة وهتفتح لوحدها بالظبط يوم <span class="font-bold text-blush-600 dir-ltr inline-block">11-11-2026</span> الساعة <span class="font-bold text-blush-600">11:11 مساءً</span> 🕚✨
+                </p>
+
+                <!-- Countdown Timer -->
+                <div class="grid grid-cols-4 gap-2 md:gap-4 max-w-md mx-auto" id="countdownGrid">
+                    <div class="bg-gradient-to-b from-blush-50 to-blush-100/60 border border-blush-200/80 rounded-2xl p-3 shadow-sm">
+                        <span id="cdDays" class="block text-2xl md:text-4xl font-extrabold text-blush-600 font-mono">00</span>
+                        <span class="text-xs md:text-sm font-semibold text-slate-500">يوم</span>
+                    </div>
+                    <div class="bg-gradient-to-b from-blush-50 to-blush-100/60 border border-blush-200/80 rounded-2xl p-3 shadow-sm">
+                        <span id="cdHours" class="block text-2xl md:text-4xl font-extrabold text-blush-600 font-mono">00</span>
+                        <span class="text-xs md:text-sm font-semibold text-slate-500">ساعة</span>
+                    </div>
+                    <div class="bg-gradient-to-b from-blush-50 to-blush-100/60 border border-blush-200/80 rounded-2xl p-3 shadow-sm">
+                        <span id="cdMinutes" class="block text-2xl md:text-4xl font-extrabold text-blush-600 font-mono">00</span>
+                        <span class="text-xs md:text-sm font-semibold text-slate-500">دقيقة</span>
+                    </div>
+                    <div class="bg-gradient-to-b from-blush-50 to-blush-100/60 border border-blush-200/80 rounded-2xl p-3 shadow-sm">
+                        <span id="cdSeconds" class="block text-2xl md:text-4xl font-extrabold text-blush-600 font-mono">00</span>
+                        <span class="text-xs md:text-sm font-semibold text-slate-500">ثانية</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Envelope Container -->
+            <div class="envelope-wrapper relative w-full max-w-md cursor-pointer group" onclick="attemptUnlockManual()">
+                <div class="envelope bg-gradient-to-br from-white via-blush-50 to-blush-100 border-2 border-blush-200/90 rounded-3xl p-8 shadow-2xl text-center relative overflow-hidden glow-gold">
+                    <!-- Ribbon Decoration -->
+                    <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-16 h-24 bg-blush-300/40 blur-md rounded-full"></div>
+                    
+                    <div class="relative z-10 my-4 flex flex-col items-center justify-center">
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope text-6xl md:text-7xl text-blush-400 group-hover:scale-110 transition duration-300"></i>
+                            <div class="absolute -top-1 -right-1 bg-amber-400 text-white rounded-full w-8 h-8 flex items-center justify-center text-xs shadow-md border-2 border-white">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-slate-700 font-semibold text-base">اضغطي هنا للتحقق من الموعد 💌</p>
+                        <span class="text-xs text-blush-500 mt-1 font-medium bg-blush-100/80 px-3 py-1 rounded-full">جاهزة للاستلام قريباً</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= STATE 2: UNLOCKED CONTENT ================= -->
+        <div id="unlockedState" class="w-full hidden space-y-8 animate-fade-in">
+            
+            <!-- Unlocked Banner -->
+            <div class="bg-white/90 backdrop-blur-lg rounded-3xl p-6 md:p-8 shadow-2xl border border-blush-200 glow-effect relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-blush-200/50 rounded-full blur-2xl"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-rosegold-light/50 rounded-full blur-2xl"></div>
+
+                <!-- Audio Floating Player Control -->
+                <div class="flex justify-between items-center border-b border-blush-100 pb-4 mb-6">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span class="text-xs font-bold text-slate-600">تم فتح الجواب بنجاح ✨</span>
+                    </div>
+                    <button id="musicToggleBtn" onclick="toggleMusic()" class="px-4 py-2 bg-gradient-to-r from-blush-400 to-blush-600 text-white rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:scale-105 transition flex items-center gap-2">
+                        <i id="musicIcon" class="fa-solid fa-music"></i>
+                        <span id="musicBtnText">تشغيل موسيقى هادئة 🎵</span>
+                    </button>
+                </div>
+
+                <!-- Romantic Letter Content -->
+                <div class="space-y-6 text-slate-800">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl md:text-3xl font-bold font-reem text-blush-700 mb-2">حبيبتي وخطيبتي وأجمل ما في حياتي ❤️</h2>
+                        <div class="w-24 h-1 bg-gradient-to-r from-transparent via-blush-400 to-transparent mx-auto rounded-full"></div>
+                    </div>
+
+                    <div class="font-amiri text-lg md:text-xl leading-relaxed text-slate-700 bg-blush-50/50 p-6 rounded-2xl border border-blush-100 shadow-inner space-y-4">
+                        <p class="first-letter:text-3xl first-letter:font-bold first-letter:text-blush-600">
+                            النهارده يوم مش عادي.. النهارده الساعة 11:11 حبيت أقولك قد إيه أنتِ نعمة ربنا الجميلة في حياتي. وجودك جاب معاه الفرحة والأمان والضحكة اللي بتطلع من القلب.
+                        </p>
+                        <p>
+                            كل ثانية عدت من ساعة ما بقينا سوا وأنا متأكد إن اختيارك هو أحسن وأفضل قرار خدته في حياتي. أنتِ مش بس خطيبتي، أنتِ صاحبتي وشريكة عمري والأميرة اللي ملت دنيتي ورد وحب.
+                        </p>
+                        <p>
+                            وعد مني إني هفضل دايماً سندك، ضحكتك، وأكتر حد يخاف عليكِ ويحسسِك بأمان. بحبك جداً ومستني اليوم اللي نجمع فيه بيتنا الصغير على خير يا كل دنيتي 💕.
+                        </p>
+                    </div>
+
+                    <!-- Heart Signture -->
+                    <div class="text-left pt-4 font-reem text-blush-600 text-lg font-bold">
+                        خطيبك ومحبك الدائم 💍❤️
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Flip Cards / Memories Gallery -->
+            <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white">
+                <h3 class="text-center font-bold text-slate-800 text-lg mb-4 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-sparkles text-amber-400"></i>
+                    ذكريات صغيرة بيننا (اضغطي على الكارت)
+                    <i class="fa-solid fa-sparkles text-amber-400"></i>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    <!-- Card 1 -->
+                    <div class="card-flip h-40 cursor-pointer">
+                        <div class="card-inner relative w-full h-full text-center shadow-md rounded-2xl">
+                            <div class="card-front absolute inset-0 bg-gradient-to-br from-blush-100 to-white rounded-2xl p-4 flex flex-col items-center justify-center border border-blush-200">
+                                <i class="fa-solid fa-heart-pulse text-3xl text-blush-500 mb-2"></i>
+                                <h4 class="font-bold text-slate-700 text-sm">أول كلمة حب</h4>
+                                <span class="text-xs text-slate-400 mt-1">اضغطي هنا 🔮</span>
+                            </div>
+                            <div class="card-back absolute inset-0 bg-blush-500 text-white rounded-2xl p-4 flex items-center justify-center text-xs md:text-sm font-semibold leading-relaxed shadow-lg">
+                                كانت البداية لكل حاجة حلوة بنعيشها سوا دلوقت! ❤️
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="card-flip h-40 cursor-pointer">
+                        <div class="card-inner relative w-full h-full text-center shadow-md rounded-2xl">
+                            <div class="card-front absolute inset-0 bg-gradient-to-br from-blush-100 to-white rounded-2xl p-4 flex flex-col items-center justify-center border border-blush-200">
+                                <i class="fa-solid fa-ring text-3xl text-amber-400 mb-2"></i>
+                                <h4 class="font-bold text-slate-700 text-sm">يوم الخطوبة</h4>
+                                <span class="text-xs text-slate-400 mt-1">اضغطي هنا 🔮</span>
+                            </div>
+                            <div class="card-back absolute inset-0 bg-rosegold text-white rounded-2xl p-4 flex items-center justify-center text-xs md:text-sm font-semibold leading-relaxed shadow-lg">
+                                أحلى يوم في حياتي لما أيدك لمست أيدي وبقيتي خطيبتي رسمياً ✨
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="card-flip h-40 cursor-pointer">
+                        <div class="card-inner relative w-full h-full text-center shadow-md rounded-2xl">
+                            <div class="card-front absolute inset-0 bg-gradient-to-br from-blush-100 to-white rounded-2xl p-4 flex flex-col items-center justify-center border border-blush-200">
+                                <i class="fa-solid fa-infinity text-3xl text-blush-500 mb-2"></i>
+                                <h4 class="font-bold text-slate-700 text-sm">الوعد والمستقبل</h4>
+                                <span class="text-xs text-slate-400 mt-1">اضغطي هنا 🔮</span>
+                            </div>
+                            <div class="card-back absolute inset-0 bg-gradient-to-r from-blush-600 to-blush-500 text-white rounded-2xl p-4 flex items-center justify-center text-xs md:text-sm font-semibold leading-relaxed shadow-lg">
+                                هنبني سوا بيتنا ونحقق كل أحلامنا مع بعض طول العمر 🏠💖
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Love Meter Interactive Card -->
+            <div class="bg-gradient-to-r from-blush-100 via-white to-blush-100 rounded-3xl p-6 shadow-xl border border-blush-200 text-center">
+                <h3 class="font-bold text-slate-800 mb-2 text-base">مقياس الحب الحقيقي 💖</h3>
+                <p class="text-xs text-slate-500 mb-4">اضغطي على الزرار عشان تقيسي نسبة حبي ليكي النهاردة!</p>
+                <div class="w-full bg-slate-100 h-6 rounded-full overflow-hidden shadow-inner max-w-md mx-auto mb-4 relative border border-slate-200">
+                    <div id="loveMeterFill" class="h-full bg-gradient-to-r from-blush-400 to-blush-600 w-0 transition-all duration-1000 rounded-full"></div>
+                    <span id="loveMeterText" class="absolute inset-0 flex items-center justify-center text-xs font-bold text-slate-700">0%</span>
+                </div>
+                <button onclick="calculateLove()" class="px-6 py-2.5 bg-blush-600 hover:bg-blush-700 text-white font-bold rounded-full text-xs shadow-md transition transform active:scale-95">
+                    احسبي نسبة الحب الآن 🚀
+                </button>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+                <button onclick="triggerConfetti()" class="px-6 py-3 bg-white text-blush-600 border border-blush-300 font-bold rounded-2xl text-xs md:text-sm shadow-sm hover:shadow-md transition flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+                    إطلاق احتفال الورد 🌸
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER / DISCREET TEST CONTROLS -->
+    <footer class="relative z-10 py-6 text-center text-slate-500 text-xs px-4">
+        <p class="mb-3 font-medium text-slate-400">مصممة بحب خصيصاً بمناسبة 11-11 ✨</p>
+        
+        <!-- Discreet Preview Toggle Button -->
+        <div class="inline-block mt-2">
+            <button onclick="togglePreviewMode()" id="testModeBtn" class="bg-white/70 backdrop-blur border border-blush-200 hover:bg-blush-100 text-blush-700 text-[11px] font-semibold py-1.5 px-4 rounded-full transition shadow-sm">
+                <i class="fa-solid fa-eye text-blush-500 ml-1"></i>
+                <span id="testBtnLabel">زر المعاينة السريعة (للتجربة الآن)</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Custom Toast / Modal Message -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl text-xs font-semibold hidden transition duration-300 border border-slate-700 flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-blush-400 text-sm"></i>
+        <span id="toastMsg">رسالة التنبيه</span>
+    </div>
+
+    <!-- AUDIO SYNTHESIZER (Pure JS Tone generator for gentle ambient melody) -->
+    <script>
+        // Target Release Date: Nov 11, 2026 - 11:11 PM (23:11)
+        const TARGET_DATE = new Date("2026-11-11T23:11:00").getTime();
+        
+        let isForceUnlocked = false;
+        let isMusicPlaying = false;
+        let audioCtx = null;
+        let melodyInterval = null;
+
+        // Floating Hearts Background Generator
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const icons = ['fa-heart', 'fa-sparkles', 'fa-cloud-heart'];
+            const colors = ['#ff85a3', '#f8517c', '#e8b4b8', '#ffb8cb'];
+            
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                heart.innerHTML = `<i class="fa-solid ${randomIcon}"></i>`;
+                
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.fontSize = `${Math.random() * 20 + 12}px`;
+                heart.style.animationDuration = `${Math.random() * 6 + 6}s`;
+                heart.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(heart);
+            }
+        }
+
+        // Countdown Logic
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = TARGET_DATE - now;
+
+            if (distance <= 0 || isForceUnlocked) {
+                // Time reached or unlocked manually
+                showUnlockedState();
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("cdDays").innerText = String(days).padStart(2, '0');
+            document.getElementById("cdHours").innerText = String(hours).padStart(2, '0');
+            document.getElementById("cdMinutes").innerText = String(minutes).padStart(2, '0');
+            document.getElementById("cdSeconds").innerText = String(seconds).padStart(2, '0');
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
+        // Manual Unlock Attempt
+        function attemptUnlockManual() {
+            const now = new Date().getTime();
+            if (now >= TARGET_DATE || isForceUnlocked) {
+                showUnlockedState();
+            } else {
+                showToast("المفاجأة لسة مقفولة! هتفتح بالظبط يوم 11-11 الساعة 11:11 مساءً ⏳");
+            }
+        }
+
+        // Toggle Preview/Test Mode
+        function togglePreviewMode() {
+            isForceUnlocked = !isForceUnlocked;
+            const btnLabel = document.getElementById('testBtnLabel');
+            
+            if (isForceUnlocked) {
+                btnLabel.innerText = "إعادة إغلاق المفاجأة (وضع التوقيت الأصلي)";
+                showUnlockedState();
+                showToast("تم فتح المفاجأة بمعاينة سريعة 💖");
+            } else {
+                btnLabel.innerText = "زر المعاينة السريعة (للتجربة الآن)";
+                showLockedState();
+                showToast("تم إعادة تفعيل العداد والتوقيت 🔒");
+            }
+        }
+
+        // Display Unlocked UI with animation
+        function showUnlockedState() {
+            document.getElementById('lockedState').classList.add('hidden');
+            const unlockedElem = document.getElementById('unlockedState');
+            unlockedElem.classList.remove('hidden');
+            triggerConfetti();
+        }
+
+        // Display Locked UI
+        function showLockedState() {
+            document.getElementById('unlockedState').classList.add('hidden');
+            document.getElementById('lockedState').classList.remove('hidden');
+        }
+
+        // Romantic Confetti Blast
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ff85a3', '#f8517c', '#e8b4b8', '#ffffff']
+                });
+            }
+        }
+
+        // Interactive Love Meter
+        function calculateLove() {
+            const fill = document.getElementById('loveMeterFill');
+            const text = document.getElementById('loveMeterText');
+            
+            fill.style.width = '0%';
+            text.innerText = 'جاري الحساب...';
+            
+            setTimeout(() => {
+                fill.style.width = '100%';
+                text.innerText = '1000000% (حب غير محدود!) Infinity ❤️';
+                triggerConfetti();
+            }, 500);
+        }
+
+        // Soft Piano-like Ambient Melody Generator (Web Audio API)
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                stopMusic();
+            } else {
+                startMusic();
+            }
+        }
+
+        function startMusic() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                
+                const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 349.23]; // C4, E4, G4, C5, A4, F4
+                let step = 0;
+
+                melodyInterval = setInterval(() => {
+                    if (!audioCtx) return;
+                    
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
+                    
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 2.5);
+                    
+                    step++;
+                }, 1200);
+
+                isMusicPlaying = true;
+                document.getElementById('musicIcon').className = 'fa-solid fa-pause';
+                document.getElementById('musicBtnText').innerText = 'إيقاف الموسيقى ⏸️';
+                showToast("شغالة موسيقى هادية وناعمة 🎶");
+            } catch (e) {
+                console.log("Audio not supported", e);
+                showToast("تعذر تشغيل الصوت في متصفحك");
+            }
+        }
+
+        function stopMusic() {
+            if (melodyInterval) clearInterval(melodyInterval);
+            if (audioCtx) {
+                audioCtx.close();
+                audioCtx = null;
+            }
+            isMusicPlaying = false;
+            document.getElementById('musicIcon').className = 'fa-solid fa-music';
+                document.getElementById('musicBtnText').innerText = 'تشغيل موسيقى هادئة 🎵';
+        }
+
+        // Initialization
+        window.onload = function () {
+            createHearts();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        };
+    </script>
+</body>
+</html>
