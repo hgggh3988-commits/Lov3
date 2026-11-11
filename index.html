@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TO Bonty♥✨</title>
+    <!-- ربط الـ PWA عشان التثبيت الحقيقي -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a0e2e">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -11,6 +14,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -23,7 +27,7 @@
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
-            padding: 20px;
+            padding: 15px;
         }
 
         @keyframes gradientBG {
@@ -34,31 +38,30 @@
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 182, 193, 0.3);
             border-radius: 24px;
-            padding: 30px 20px;
+            padding: 25px 15px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 105, 180, 0.2);
             text-align: center;
             position: relative;
             z-index: 10;
         }
 
-        /* ستايل شاشة القفل والعداد */
         #lock-screen {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px 0;
+            padding: 15px 0;
         }
 
         .lock-icon {
-            font-size: 60px;
-            margin-bottom: 15px;
+            font-size: 55px;
+            margin-bottom: 12px;
             animation: bounce 2s infinite;
         }
 
@@ -69,41 +72,41 @@
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 22px;
+            margin-bottom: 8px;
             color: #ffb6c1;
         }
 
         p.subtitle {
-            font-size: 14px;
+            font-size: 13px;
             color: #f3d1d9;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .countdown-box {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .time-card {
             background: rgba(255, 255, 255, 0.12);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 12px;
-            min-width: 65px;
+            min-width: 60px;
         }
 
         .time-card span {
             display: block;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             color: #ff69b4;
         }
 
         .time-card label {
-            font-size: 11px;
+            font-size: 10px;
             color: #ddd;
         }
 
@@ -111,13 +114,12 @@
             background: rgba(255, 0, 0, 0.15);
             border: 1px solid rgba(255, 100, 100, 0.3);
             color: #ffcccc;
-            padding: 12px;
+            padding: 10px;
             border-radius: 12px;
-            font-size: 13px;
-            margin-top: 15px;
+            font-size: 12px;
+            margin-top: 10px;
         }
 
-        /* ستايل محتوى الرسالة بعد الفتح */
         #main-content {
             display: none;
             opacity: 0;
@@ -132,36 +134,37 @@
         .message-card {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 20px;
-            margin-top: 15px;
+            padding: 15px;
+            margin-top: 12px;
             line-height: 1.8;
-            font-size: 16px;
+            font-size: 14px;
             color: #fff;
             border-right: 4px solid #ff69b4;
             text-align: right;
+            max-height: 320px;
+            overflow-y: auto;
         }
 
         .memories-section {
-            margin-top: 25px;
+            margin-top: 20px;
             text-align: right;
         }
 
         .memories-section h3 {
-            font-size: 18px;
+            font-size: 16px;
             color: #ffb6c1;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .memory-item {
             background: rgba(255, 255, 255, 0.06);
-            padding: 12px 15px;
+            padding: 10px 12px;
             border-radius: 12px;
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-size: 13px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* قلوب عائمة في الخلفية */
         .floating-heart {
             position: absolute;
             color: rgba(255, 105, 180, 0.6);
@@ -172,89 +175,68 @@
         }
 
         @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0.5);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-10vh) scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- شاشة القفل والعداد التنازلي -->
         <div id="lock-screen">
             <div class="lock-icon">🔒</div>
             <h1>Happy massage 11:11♥✨</h1>
             <p class="subtitle">المسج هتفتح بليل يبنوتي♥✨</p>
             
             <div class="countdown-box">
-                <div class="time-card">
-                    <span id="days">00</span>
-                    <label>يوم</label>
-                </div>
-                <div class="time-card">
-                    <span id="hours">00</span>
-                    <label>ساعة</label>
-                </div>
-                <div class="time-card">
-                    <span id="minutes">00</span>
-                    <label>دقيقة</label>
-                </div>
-                <div class="time-card">
-                    <span id="seconds">00</span>
-                    <label>ثانية</label>
-                </div>
+                <div class="time-card"><span id="days">00</span><label>يوم</label></div>
+                <div class="time-card"><span id="hours">00</span><label>ساعة</label></div>
+                <div class="time-card"><span id="minutes">00</span><label>دقيقة</label></div>
+                <div class="time-card"><span id="seconds">00</span><label>ثانية</label></div>
             </div>
 
-            <div class="locked-msg">
-                بحبك♥✨
-            </div>
+            <div class="locked-msg">بحبك♥✨</div>
         </div>
 
-        <!-- محتوى الرسالة بعد الفتح -->
         <div id="main-content">
             <div class="lock-icon">💖</div>
-            <h1>الي  بنوتي حبيبة بابا♥✨</h1>
+            <h1>الي بنوتي حبيبة بابا♥✨</h1>
             
             <div class="message-card">
-                ♥👀 حاسس إن الكلام اللي جوايا أكبر من إني أقوله في كلمتين ومش عايز اضيع اللحظة من غير ما أقولك اللي يستاهل يتقال ل بنوتي♥🌚 النهارده 11/11 والساعة 11:11 والناس بتحب تقول إن اللحظة دي بتتحقق فيها الأمنيات وأنا مش عارف إذا كانت الحكاية دي صح ولا لأ بس اللي متأكد منه إن من أول ما دخلتي حياتي بقيت أتمنى حاجات كتير وأنا حاسس إنها قريبة مش بعيدة بقيت أتمنى أشوفك مبسوطة وأتمنى يومك يبقى سهل وأتمنى أكون سبب في ضحكة تجيلك من غير سبب وكل أمنية من دول بدأت منك إنتي يا بنوتي إنتي مش عارفة إنتي بقيتي إيه بالنسبالي وأنا نفسي اوصلك الإحساس ده من غير ما أتكلم كتير بقيتي أول واحدة أفكر فيها لما أصحى وآخر واحدة في بالي قبل ما أنام بقيتي الشخص اللي لما يحصل معايا حاجة حلوة أول حاجة بفكر فيها لازم أحكيلها ولما اليوم يبقى تقيل أول حاجة بفكر فيها نفسي أسمع صوتها بقيتي الحتة اللي برتاح فيها من غير ما أعمل مجهود واللي معاها بحس إني على طبيعتي من غير ما أحسب كل كلمة بقولها يميرو أنا بحب فيكي حاجات كتير يمكن عمرك ما عرفتي إني واخد بالي منها بحب طريقتك وإنتي بتتكلمي عن حاجة بتحبيها وبحب اهتمامك اللي بتحسي بيه من غير ما أطلب وبحب إنك بتفرحي عشاني كأن نجاحي نجاحك وبتزعلي عشاني كأن الهم همك وبحب أكتر حاجة إني معاكي مش محتاج أكون مثالي عشان أحس إنك شايفاني كويس وعايزاكي تعرفي حاجة يمكن الكلام ده مش بقوله كتير إنتي غالية عندي اوي بجد  أكتر من إن الكلمة توصف ومش عشان إنتي بتعملي حاجة معينة إنتي غالية عشان إنتي إنتي بكل تفاصيلك بأيامك الحلوة وأيامك اللي مش أحسن حاجة أنا مش مستني منك تكوني مثالية أنا بس عايزك مرتاحة ومطمنة وعايزك تحسي إن في حد بيحبك بصدق وبيتمنالك الخير من قلبه ومش شايفك شخص عادي في حياته يا حياتي يمكن ساعات مقدرش أقول اللي جوايا ويمكن أكون قاعد ساكت وأنا جوايا كلام كتير بس صدقيني سكوتي عمره ما كان قلة إحساس بالعكس جوايا ليكي كلام ومشاعر أكبر من إني أعرف أحطها في رسالة أو في كلمتين ويمكن السايت ده كله محاولة صغيرة إني أقولك اللي مش بعرف أقوله بلساني أنا و عارف إن وجودك في حياتي حاجة أنا ممتن ليها أوي ونفسي أفضل أشوفك مبسوطة وأفتخر بيكي وأشوفك بتوصلي لكل حاجة نفسك فيها ونفسي ربنا يبعد عنك كل حاجة تضايق قلبك يعوضك عن أي لحظة صعبة ويرزقك راحة بال وفرحة على قد قلبك ومهما قلتلك إنك غالية هفضل حاسس إن الكلمة قليلة عليكي لأنك بجد من الناس اللي مش بتتكرر واللي الواحد بيبقى ممتن إن ربنا جمعه بيهم بجد  اللحظة دي 11/11 الساعة 11:11 تبقى لحظة أقولك فيها بجد أنا ممتن إنك في حياتي وممتن إن ربنا جمعنا ونفسي أفضل أختارك كل يوم وأفضل أكون سبب في ضحكتك ولو بأبسط حاجة بحبك حب مش عارف أوصفه وربنا يخليكي ليا ويحفظك من كل سوء ويديمك أحن وأجمل نصيب في حياتي يبنوتي♥👀🫂
+                ♥👀 حاسس إن الكلام اللي جوايا أكبر من إني أقوله في كلمتين ومش عايز اضيع اللحظة من غير ما أقولك اللي يستاهل يتقال ل بنوتي♥🌚 النهارده 11/11 والساعة 11:11 والناس بتحب تقول إن اللحظة دي بتتحقق فيها الأمنيات وأنا مش عارف إذا كانت الحكاية دي صح ولا لأ بس اللي متأكد منه إن من أول ما دخلتي حياتي بقيت أتمنى حاجات كتير وأنا حاسس إنها قريبة مش بعيدة بقيت أتمنى أشوفك مبسوطة وأتمنى يومك يبقى سهل وأتمنى أكون سبب في ضحكة تجيلك من غير سبب وكل أمنية من دول بدأت منك إنتي يا بنوتي إنتي مش عارفة إنتي بقيتي إيه بالنسبالي وأنا نفسي اوصلك الإحساس ده من غير ما أتكلم كتير بقيتي أول واحدة أفكر فيها لما أصحى وآخر واحدة في بالي قبل ما أنام بقيتي الشخص اللي لما يحصل معايا حاجة حلوة أول حاجة بفكر فيها لازم أحكيلها ولما اليوم يبقى تقيل أول حاجة بفكر فيها نفسي أسمع صوتها بقيتي الحتة اللي برتاح فيها من غير ما أعمل مجهود واللي معاها بحس إني على طبيعتي من غير ما أحسب كل كلمة بقولها يميرو أنا بحب فيكي حاجات كتير يمكن عمرك ما عرفتي إني واخد بالي منها بحب طريقتك وإنتي بتتكلمي عن حاجة بتحبيها وبحب اهتمامك اللي بتحسي بيه من غير ما أطلب وبحب إنك بتفرحي عشاني كأن نجاحي نجاحك وبتزعلي عشاني كأن الهم همك وبحب أكتر حاجة إني معاكي مش محتاج أكون مثالي عشان أحس إنك شايفاني كويس وعايزاكي تعرفي حاجة يمكن الكلام ده مش بقوله كتير إنتي غالية عندي اوي بجد أكتر من إن الكلمة توصف ومش عشان إنتي بتعملي حاجة معينة إنتي غالية عشان إنتي إنتي بكل تفاصيلك بأيامك الحلوة وأيامك اللي مش أحسن حاجة أنا مش مستني منك تكوني مثالية أنا بس عايزك مرتاحة ومطمنة وعايزك تحسي إن في حد بيحبك بصدق وبيتمنالك الخير من قلبه ومش شايفك شخص عادي في حياته يا حياتي يمكن ساعات مقدرش أقول اللي جوايا ويمكن أكون قاعد ساكت وأنا جوايا كلام كتير بس صدقيني سكوتي عمره ما كان قلة إحساس بالعكس جوايا ليكي كلام ومشاعر أكبر من إني أعرف أحطها في رسالة أو في كلمتين ويمكن السايت ده كله محاولة صغيرة إني أقولك اللي مش بعرف أقوله بلساني أنا و عارف إن وجودك في حياتي حاجة أنا ممتن ليها أوي ونفسي أفضل أشوفك مبسوطة وأفتخر بيكي وأشوفك بتوصلي لكل حاجة نفسك فيها ونفسي ربنا يبعد عنك كل حاجة تضايق قلبك يعوضك عن أي لحظة صعبة ويرزقك راحة بال وفرحة على قد قلبك ومهما قلتلك إنك غالية هفضل حاسس إن الكلمة قليلة عليكي لأنك بجد من الناس اللي مش بتتكرر واللي الواحد بيبقى ممتن إن ربنا جمعه بيهم بجد اللحظة دي 11/11 الساعة 11:11 تبقى لحظة أقولك فيها بجد أنا ممتن إنك في حياتي وممتن إن ربنا جمعنا ونفسي أفضل أختارك كل يوم وأفضل أكون سبب في ضحكتك ولو بأبسط حاجة بحبك حب مش عارف أوصفه وربنا يخليكي ليا ويحفظك من كل سوء ويديمك أحن وأجمل نصيب في حياتي يبنوتي♥👀🫂
             </div>
 
             <div class="memories-section">
                 <h3>اكتر حاجة بحبها ف بنوتي♥🫂</h3>
                 <div class="memory-item">ضحكتك يبنوتي احلي ضحكه شوفتها ف حياتي بجد🥺♥</div>
                 <div class="memory-item">👀عيونك عيونك سحرووووني من اول ما شوفتك يعمري انتي والله بجد🥺♥</div>
-                <div class="memory-item">وجودك يعمري 
-وجودك احلي حاجة حصلتلي ف حياتي بجد♥🥺</div>
+                <div class="memory-item">وجودك يعمري <br>وجودك احلي حاجة حصلتلي ف حياتي بجد♥🥺</div>
             </div>
         </div>
     </div>
 
     <script>
-        // تاريخ ووقت الفتح المستهدف (11 نوفمبر 2026 الساعة 11:11 مساءً)
-        const targetDate = new Date("November 11, 2026 17:11:00").getTime();
+        // تسجيل الـ Service Worker لتفعيل التثبيت كتطبيق حقيقي
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error: ', err));
+            });
+        }
+
+        const targetDate = new Date("November 11, 2026 23:11:00").getTime();
 
         const countdownInterval = setInterval(function() {
             const now = new Date().getTime();
             const distance = targetDate - now;
 
             if (distance < 0) {
-                // وقت الفتح جه! فتح الرسالة فوراً
                 clearInterval(countdownInterval);
                 document.getElementById('lock-screen').style.display = 'none';
                 const mainContent = document.getElementById('main-content');
                 mainContent.classList.add('show');
                 playWelcomeSound();
             } else {
-                // حساب الأيام والساعات والدقائق والثواني
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -267,7 +249,6 @@
             }
         }, 1000);
 
-        // توليد قلوب عائمة في الخلفية بشكل جمالي
         function createFloatingHearts() {
             const heart = document.createElement('div');
             heart.classList.add('floating-heart');
@@ -277,21 +258,18 @@
             heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
             document.body.appendChild(heart);
 
-            setTimeout(() => {
-                heart.remove();
-            }, 6000);
+            setTimeout(() => { heart.remove(); }, 6000);
         }
 
         setInterval(createFloatingHearts, 500);
 
-        // تشغيل نغمة خفيفة عند فتح الصفحة (Web Audio API)
         function playWelcomeSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // نغمة C5
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
                 osc.connect(gain);
