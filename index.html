@@ -165,6 +165,46 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* ستايل مشغل الأغاني الجديد */
+        .music-player-box {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            padding: 15px;
+            border-radius: 16px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .music-title {
+            font-size: 14px;
+            color: #ffb6c1;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .music-btns {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .music-btn {
+            background: rgba(255, 105, 180, 0.2);
+            border: 1px solid #ff69b4;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .music-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 105, 180, 0.4);
+        }
+
         .floating-heart {
             position: absolute;
             color: rgba(255, 105, 180, 0.6);
@@ -182,6 +222,12 @@
     </style>
 </head>
 <body>
+
+    <!-- عنصر الصوت والأغنية -->
+    <audio id="loveSong" loop>
+        <source src="maha_fetouny_yaretet_galtak.mp3" type="audio/mpeg">
+        متصفحك لا يدعم تشغيل الملفات الصوتية.
+    </audio>
 
     <div class="container">
         <div id="lock-screen">
@@ -213,6 +259,15 @@
                 <div class="memory-item">👀عيونك عيونك سحرووووني من اول ما شوفتك يعمري انتي والله بجد🥺♥</div>
                 <div class="memory-item">وجودك يعمري <br>وجودك احلي حاجة حصلتلي ف حياتي بجد♥🥺</div>
             </div>
+
+            <!-- مشغل الأغنية (مها فتوني - ياريتك جيتلك من بدري) -->
+            <div class="music-player-box">
+                <div class="music-title">🎶 مها فتوني - ياريتك جيتلك من بدري</div>
+                <div class="music-btns">
+                    <button class="music-btn" onclick="playSong()">Play 🎵</button>
+                    <button class="music-btn" onclick="stopSong()">Stop ⏹️</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -235,7 +290,8 @@
                 document.getElementById('lock-screen').style.display = 'none';
                 const mainContent = document.getElementById('main-content');
                 mainContent.classList.add('show');
-                playWelcomeSound();
+                // تشغيل الأغنية تلقائياً عند فتح الرسالة
+                playSong();
             } else {
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -248,6 +304,18 @@
                 document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
             }
         }, 1000);
+
+        // وظائف أزرار التشغيل والإيقاف للأغنية
+        function playSong() {
+            const song = document.getElementById('loveSong');
+            song.play().catch(e => console.log("Audio play blocked or waiting for interaction"));
+        }
+
+        function stopSong() {
+            const song = document.getElementById('loveSong');
+            song.pause();
+            song.currentTime = 0;
+        }
 
         function createFloatingHearts() {
             const heart = document.createElement('div');
@@ -262,22 +330,6 @@
         }
 
         setInterval(createFloatingHearts, 500);
-
-        function playWelcomeSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 1.5);
-            } catch(e) {}
-        }
     </script>
 </body>
 </html>
